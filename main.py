@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, render_template
 from PIL import Image
 import pillow_heif
 import io
@@ -8,38 +8,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def upload_file():
-    # 出力形式を選択できるフォーム
-    return '''
-    <!doctype html>
-    <html>
-    <head>
-        <title>Image Converter</title>
-    </head>
-    <body>
-        <h1>画像ファイルを変換</h1>
-        <form action="/convert" method="post" enctype="multipart/form-data">
-            <input type="file" name="file"><br><br>
-            <label for="format">出力形式を選択:</label>
-            <select name="format">
-                <option value="JPEG">JPEG</option>
-                <option value="PNG">PNG</option>
-                <option value="BMP">BMP</option>
-                <option value="GIF">GIF</option>
-                <option value="TIFF">TIFF</option>
-                <option value="WebP">WebP</option>
-            </select><br><br>
-            <input type="submit" value="Upload">
-        </form>
-    </body>
-    </html>
-    '''
+    return render_template("upload.html")
 
 @app.route('/convert', methods=['POST'])
 def convert_image():
     if 'file' not in request.files:
         return 'ファイルがありません'
     file = request.files['file']
-    output_format = request.form.get('format', 'JPEG')  # デフォルトはJPEG
+    output_format = request.form.get('format', 'JPEG')
+    custom_filename = request.form.get('custom_filename', 'converted_image')
     filename, file_extension = os.path.splitext(file.filename)
     if file.filename == '':
         return 'ファイルが選択されていません'
@@ -65,7 +42,7 @@ def convert_image():
         return send_file(
             output,
             as_attachment=True,
-            download_name=f'converted_image.{output_format.lower()}'
+            download_name=f'{custom_filename}.{output_format.lower()}'
         )
 
 if __name__ == '__main__':

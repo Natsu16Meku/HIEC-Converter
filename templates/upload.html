@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+    <title>Image Converter</title>
+</head>
+<body>
+    <h1>画像ファイルを変換</h1>
+    <form action="/convert" method="post" enctype="multipart/form-data">
+        <input type="file" name="file"><br><br>
+        <label for="format">出力形式を選択:</label>
+        <select name="format">
+            <option value="JPEG">JPEG</option>
+            <option value="PNG">PNG</option>
+            <option value="BMP">BMP</option>
+            <option value="GIF">GIF</option>
+            <option value="TIFF">TIFF</option>
+            <option value="WebP">WebP</option>
+        </select><br><br>
+        <label for="custom_filename">カスタムファイル名:</label>
+        <input type="text" name="custom_filename" placeholder="converted_image"><br><br>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>
