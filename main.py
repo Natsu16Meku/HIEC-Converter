@@ -14,12 +14,14 @@ def upload_file():
 def convert_image():
     if 'file' not in request.files:
         return 'ファイルがありません'
+    
     file = request.files['file']
     output_format = request.form.get('format', 'JPEG')
-    custom_filename = request.form.get('custom_filename', 'converted_image')
     filename, file_extension = os.path.splitext(file.filename)
+    custom_filename = request.form.get('custom_filename', 'converted_image') or filename
     if file.filename == '':
         return 'ファイルが選択されていません'
+    
     if file:
         if file_extension.lower() in ['.heic', '.heif']:
             # HEIC/HEIFファイルを指定された形式に変換
@@ -39,10 +41,11 @@ def convert_image():
         output = io.BytesIO()
         image.save(output, format=output_format)
         output.seek(0)
+        download_filename = f'{custom_filename}.{output_format.lower()}'
         return send_file(
             output,
             as_attachment=True,
-            download_name=f'{custom_filename}.{output_format.lower()}'
+            download_name=download_filename
         )
 
 if __name__ == '__main__':
